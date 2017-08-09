@@ -4,7 +4,7 @@ zkcli is a pure golang zookeeper cli capable of executing commands with requirin
 Currently, this cli can create, get, setAcl, getAcl 
 
 ##
-
+```
 USAGE
 
 	 ./zk-cli-linux-amd64 <global-options>  {create|get|getAcl|setAcl|help} [<action options>|help]
@@ -66,4 +66,4 @@ GLOBAL OPTIONS:
     	Turn on debug
   -zk-hosts string
     	Zookeeper URI of the form zk://user:passord@host1:port1,host2:port2/chroot/path  REQUIRED
-
+```
