@@ -52,7 +52,7 @@ upload-container: build-container
 
 
 strip:
-	strip zk-cli
+	strip zk-cli-linux-amd64
 
 container:    ## makes zk-cli container 
 container: Dockerfile  compile  strip

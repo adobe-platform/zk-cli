@@ -2,9 +2,21 @@
 zkcli is a pure golang zookeeper cli capable of executing commands with requiring auth in a very tiny footprint
 
 Currently, this cli can create, get, setAcl, getAcl 
+## Features
+- Pure go build.  You don't need to install go
+- Only 16M docker image!
+- Can do ACLs and auth.
+## Build
 
-##
 ```
+$  `git clone https://github.com/adobe-platform/zk-cli
+$  cd zk-cli
+$  make upload-container DOCKER_CONFIG=`cd ~/.docker-hub-ethos/;pwd` PUBLISH_TAG=adobeplatform
+```
+## Usage
+```
+docker run -it adobeplatform/zk-cli
+
 USAGE
 
 	 ./zk-cli-linux-amd64 <global-options>  {create|get|getAcl|setAcl|help} [<action options>|help]
