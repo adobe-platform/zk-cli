@@ -14,4 +14,8 @@ type CommandParse interface {
 	Parse(args []string) (CommandExec, error)
 	Usage(writer io.Writer)
 }
-
+type GenericResult struct {
+	Success bool
+	Message string
+	Data   interface{}
+}

@@ -18,6 +18,8 @@ var commands commandMap
 func init() {
 	commands = commandMap{
 		"create": cli.CommandParse(new(cli.CreateZkNode)),
+		"rm": cli.CommandParse(new(cli.ZkRm)),
+		"ls": cli.CommandParse(new(cli.ZkLs)),
 		"get": cli.CommandParse(new(cli.ZkGet)),
 		"getAcl": cli.CommandParse(new(cli.ZkGetAcl)),
 		"setAcl": cli.CommandParse(new(cli.ZkSetAcl)),
@@ -30,6 +32,7 @@ func usage(msg string) {
 	}
 	options := []string{
 		"create",
+		"rm",
 		"get",
 		"getAcl",
 		"setAcl",
