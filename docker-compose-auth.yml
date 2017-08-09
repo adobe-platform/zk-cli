@@ -1,0 +1,25 @@
+version: "2"
+networks:
+  app-tier:
+    driver: bridge
+
+services:
+  zk:
+    networks:
+      - app-tier
+
+    image: 'bitnami/zookeeper:latest'
+    environment:
+      ZOO_TICK_TIME: 2000
+      ZOO_INIT_LIMIT: 10
+      ZOO_SYNC_LIMIT: 5
+      ZOO_PORT_NUMBER: 2181 
+      ZOO_SERVER_ID: 1
+      ZOO_ENABLE_AUTH: 'yes'
+      ZOO_SERVER_USERS: user1,user2
+      ZOO_SERVER_PASSWORDS: pass4user1,pass4user2
+#    healthcheck:
+#       test: ["CMD-SHELL","echo ruok|nc localhost 2181 "]
+#       interval: 30s
+#       timeout: 10s
+#       retries: 5

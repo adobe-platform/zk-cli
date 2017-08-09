@@ -1,0 +1,23 @@
+hash: 0ffb0ba28e0991953f322802fddfa936c59d439e6288ca983e0a4dbeb9f37a62
+updated: 2017-08-09T04:23:40.495144529Z
+imports:
+- name: github.com/behance/go-logging
+  version: 98df59751f14b46c6391ee33e0a3d3888708f54b
+  subpackages:
+  - formatters
+  - log
+- name: github.com/behance/go-logrus
+  version: eb84da520d0bfecda7a9288107ec991b4ebcedb4
+- name: github.com/codegangsta/negroni
+  version: 3444e69ea1ef03a77998d11fc56e7f0a34f7213c
+- name: github.com/samuel/go-zookeeper
+  version: 8ac67fae881ed12e87206ba2243c75b079b419a4
+  repo: git@github.com:adobe-platform/go-zookeeper
+  vcs: git
+  subpackages:
+  - zk
+testImports:
+- name: github.com/onsi/ginkgo
+  version: 8382b23d18dbaaff8e5f7e83784c53ebb8ec2f47
+- name: github.com/onsi/gomega
+  version: c893efa28eb45626cdaa76c9f653b62488858837

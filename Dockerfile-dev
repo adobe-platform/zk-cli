@@ -1,0 +1,37 @@
+FROM       golang:1.8-alpine
+
+ENV PATH /go/bin:/usr/local/go/bin:$PATH
+ENV GOPATH /go
+
+# install runtime scripts
+ADD . $GOPATH/src/github.com/adobe-platform/skopos-web
+
+WORKDIR $GOPATH/src/github.com/adobe-platform/skopos-web
+
+RUN apk add --no-cache --virtual .build-deps \
+      bash \
+      build-base \
+      curl \
+      make \
+      git \
+      sqlite-dev \
+      openssh-client \
+      python2  py2-pip python-dev \
+      coreutils \
+      jq \
+      && make install-tools \
+      && pip install  wheel
+#
+# Prepare git to use ssh-agent, ssh keys for adobe-platform; ignore interactive knownhosts questions from ssh
+# - For automated building with private repos only accessible by ssh
+#
+RUN mkdir -p /root/.ssh && chmod og-rwx /root/.ssh && \
+    echo "Host * " > /root/.ssh/config && \
+    echo "StrictHostKeyChecking no " >> /root/.ssh/config && \
+    echo "UserKnownHostsFile=/dev/null" >> /root/.ssh/config && \
+    git config --global url."git@github.com:adobe-platform".insteadOf "https://github.com/adobe-platform" && \
+    git config --global url."git@github.com:behance".insteadOf "https://github.com/behance" && \
+    git config --global url."git@git.corp.adobe.com:adobe-platform".insteadOf "https://git.corp.adobe.com/adobe-platform" 
+
+
+CMD /bin/bash

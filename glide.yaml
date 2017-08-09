@@ -1,0 +1,13 @@
+package: github.com/adobe-platform/zk-cli
+import:
+- package: github.com/behance/go-logging
+  subpackages:
+  - formatters
+  - log
+- package: github.com/behance/go-logrus
+- package: github.com/samuel/go-zookeeper
+  repo: git@github.com:adobe-platform/go-zookeeper
+  vcs: git
+testImport:
+- package: github.com/onsi/ginkgo
+- package: github.com/onsi/gomega

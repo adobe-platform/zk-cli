@@ -1,0 +1,69 @@
+# 
+zkcli is a pure golang zookeeper cli capable of executing commands with requiring auth in a very tiny footprint
+
+Currently, this cli can create, get, setAcl, getAcl 
+
+##
+
+USAGE
+
+	 ./zk-cli-linux-amd64 <global-options>  {create|get|getAcl|setAcl|help} [<action options>|help]
+
+COMMANDS:
+	 
+create
+  -acl value
+    	perms=(all|(r|w|c|d|a)" scheme=(world|digest|auth|ip)  id=(anyone|id).
+			if scheme is digest and id has ':' then id value is assumed to be cleartext user:password which digested with sha1
+  -input-data string
+    	data for create node operation
+  -input-file string
+    	data read from file for create node operation
+
+		Example: with password
+
+		./zk-cli-linux-amd64 --zk-hosts zk://digest:user:pw@172.20.0.2:2181/foo6 --debug create -acl 'perms=all scheme=digest id=user:pw2' --input-data "something else"
+
+		Wide open:
+		./zk-cli-linux-amd64 --zk-hosts zk://digest:user:pw@172.20.0.2:2181/foo7 --debug create -acl 'perms=all scheme=world id=anyone' --input-data "wide open"
+
+		
+get
+  -as-hex
+    	convert the node value to a hex
+  -as-string
+    	convert the node value to a string
+
+	Example:  ./zk-cli-linux-amd64 --zk-hosts zk://digest:user:pw2@172.20.0.2:2181/foo6 -debug get --as-string
+	INFO[0000] result "something else"
+
+	Example - no auth
+	./zk-cli-linux-amd64 --zk-hosts zk://digest:user:pw2@172.20.0.2:2181/foo7 -debug get --as-string
+	INFO[0000] result "wide open"
+	  
+getAcl 
+
+	Example: ./zk-cli-linux-amd64 --zk-hosts zk://172.20.0.2:2181/foo7 -debug getAcl
+	 {
+    		"Perms": 31,
+    		"Scheme": "world",
+    		"ID": "anyone"
+  	 }
+	
+setAcl 
+  -acl value
+    	perms=(all|(r|w|c|d|a)" scheme=(world|digest|auth|ip)  id=(anyone|id).
+			if scheme is digest and id has ':' then id value is assumed to be cleartext user:password which digested with sha1
+
+	Example - add acls to wide open 
+	./zk-cli-linux-amd64 --zk-hosts zk://digest:user:pw@172.20.0.2:2181/foo7 --debug setAcl -acl 'perms=all scheme=digest id=user:pw'
+	
+
+GLOBAL OPTIONS:
+ The zk target path is taken --zk-hosts for most commands
+		
+  -debug
+    	Turn on debug
+  -zk-hosts string
+    	Zookeeper URI of the form zk://user:passord@host1:port1,host2:port2/chroot/path  REQUIRED
+
