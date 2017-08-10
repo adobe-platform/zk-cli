@@ -2,13 +2,14 @@ package cli
 
 import (
 	"io"
-
 )
+
 // CommandExec is an interface returned by Parse when options are successfully parsed
 // receiver Execute is passed the global options include the Metronome client interface
 type CommandExec interface {
 	Execute(runtime *Runtime) (interface{}, error)
 }
+
 // CommandParse - interface specifying command line processing
 type CommandParse interface {
 	Parse(args []string) (CommandExec, error)
@@ -17,5 +18,5 @@ type CommandParse interface {
 type GenericResult struct {
 	Success bool
 	Message string
-	Data   interface{}
+	Data    interface{}
 }

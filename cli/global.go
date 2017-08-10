@@ -1,21 +1,21 @@
 package cli
 
 import (
-	"flag"
-	"io"
-	"fmt"
-	"strings"
 	"errors"
-	"github.com/samuel/go-zookeeper/zk"
-	"time"
+	"flag"
+	"fmt"
 	"github.com/behance/go-logging/log"
+	"github.com/samuel/go-zookeeper/zk"
+	"io"
+	"strings"
+	"time"
 )
 
 type Runtime struct {
 	zkHostRaw string
 	Debug     bool
 	ZkConnect string
-	ZkPath string
+	ZkPath    string
 	ZkServers []string
 	Client    *zk.Conn
 }
@@ -24,7 +24,7 @@ const RPC_RETRIES = 5
 const RPC_TIMEOUT = time.Second * 5
 
 func auth(raw string) (servers []string, acl []zk.ACL, err error) {
-	acl = make([]zk.ACL,0)
+	acl = make([]zk.ACL, 0)
 	up := strings.Split(raw, "@")
 	comp := raw
 	if len(up) > 1 {
@@ -35,30 +35,30 @@ func auth(raw string) (servers []string, acl []zk.ACL, err error) {
 			log.Debugf("unsplit cred %s", cred)
 			// user:password or digest:user:password
 			credPieces := strings.Split(cred, ":")
-			log.Debugf("cred %s pieces %v",cred,credPieces)
+			log.Debugf("cred %s pieces %v", cred, credPieces)
 			if len(credPieces) < 2 {
 				return servers, acl, fmt.Errorf("Can detect creds in >%s< outer >%s<", cred, up[0])
 			} else if len(credPieces) == 2 {
 				// if only 2 pieces, assume scheme & ID.  this supports sasl:user@realm , ip:address host:name
-				acl = append(acl, []zk.ACL{ zk.ACL{Scheme:credPieces[0], ID:credPieces[1]}}...)
-			}  else if len(credPieces) == 3 {
-				acl = append(acl, []zk.ACL{ zk.ACL{Scheme:credPieces[0], ID: strings.Join(credPieces[1:], ":")} }...)
-			}  else {
+				acl = append(acl, []zk.ACL{{Scheme: credPieces[0], ID: credPieces[1]}}...)
+			} else if len(credPieces) == 3 {
+				acl = append(acl, []zk.ACL{{Scheme: credPieces[0], ID: strings.Join(credPieces[1:], ":")}}...)
+			} else {
 				return servers, acl, fmt.Errorf("Unknown credentials >%s<", cred)
 			}
 		}
 		servers = strings.Split(up[1], ",")
-		if len(servers)==0 {
-			return nil,nil, fmt.Errorf("Missing servers in %s",comp)
+		if len(servers) == 0 {
+			return nil, nil, fmt.Errorf("Missing servers in %s", comp)
 		}
 
-		log.Debugf("servers: %s",servers)
-		return servers,acl,nil
+		log.Debugf("servers: %s", servers)
+		return servers, acl, nil
 	}
 
 	servers = strings.Split(comp, ",")
-	if len(servers)==0 {
-		return nil,nil, fmt.Errorf("Missing servers in %s",comp)
+	if len(servers) == 0 {
+		return nil, nil, fmt.Errorf("Missing servers in %s", comp)
 	}
 	return servers, acl, nil
 }
@@ -69,41 +69,44 @@ func ParseZKURI(zkURI string) (servers []string, chroot string, acl []zk.ACL, er
 	strippedZKConnect := strings.TrimPrefix(zkURI, "zk://")
 	parts := strings.Split(strippedZKConnect, "/")
 
-	log.Debugf("parts: %v",parts)
+	log.Debugf("parts: %v", parts)
 	if len(parts) >= 2 {
-/*		if parts[1] == "" {
-			return nil, "", nil,errors.New("ZK path must not be the root path \"/\"!")
-		}*/
-		chroot = "/" + strings.Join(parts[1:],"/")
+		chroot = "/" + strings.Join(parts[1:], "/")
+		if chroot[len(chroot)-1] == '/' {
+			chroot = chroot[:len(chroot)-1]
+		}
 		servers, acl, err = auth(parts[0])
 
 	} else {
-		return nil, "", nil,errors.New("ZK URI must be of the form " +
-		"zk://{(user:password),*}@host1:port1,host2:port2/path/to/zk/file")
+		return nil, "", nil, errors.New("ZK URI must be of the form " +
+			"zk://{(digest:user:password),..}@host1:port1,host2:port2/path/to/zk/file")
 	}
 	for _, zk := range servers {
 		if len(strings.Split(zk, ":")) != 2 {
-			return nil, "", nil,errors.New("ZK URI must be of the form " +
-			"zk://$host1:$port1,$host2:$port2/path/to/zk/file")
+			return nil, "", nil, errors.New("ZK URI must be of the form " +
+				"zk://{(digest:user:password),..}@host1:port1,host2:port2/path/to/zk/file")
+
 		}
 	}
-	return servers, chroot,acl, err
+	return servers, chroot, acl, err
 }
 
 // FlagSet - Set up the flags
-func (runtime *Runtime) FlagSet(name  string) *flag.FlagSet {
+func (runtime *Runtime) FlagSet(name string) *flag.FlagSet {
 	flags := flag.NewFlagSet(name, flag.ExitOnError)
 
 	flags.StringVar(&runtime.zkHostRaw, "zk-hosts", "", "Zookeeper URI of the form zk://user:passord@host1:port1,host2:port2/chroot/path  REQUIRED")
 	flags.BoolVar(&runtime.Debug, "debug", false, "Turn on debug")
 	return flags
 }
+
 // Usage - emit the usage
 func (runtime *Runtime) Usage(writer io.Writer) {
 	flags := runtime.FlagSet("<global options help>")
 	flags.SetOutput(writer)
 	flags.PrintDefaults()
 }
+
 // Parse - Process command line arguments
 func (runtime *Runtime) Parse(args []string) (CommandExec, error) {
 	flags := runtime.FlagSet("<global options> ")
@@ -126,10 +129,10 @@ func (runtime *Runtime) Parse(args []string) (CommandExec, error) {
 	runtime.ZkPath = zkChroot
 	c, _, err := zk.Connect(zkServers, RPC_TIMEOUT)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
-	for _,auth := range acl{
-		c.AddAuth(auth.Scheme,[]byte(auth.ID))
+	for _, auth := range acl {
+		c.AddAuth(auth.Scheme, []byte(auth.ID))
 	}
 	runtime.Client = c
 
@@ -137,4 +140,3 @@ func (runtime *Runtime) Parse(args []string) (CommandExec, error) {
 	// No exec returned
 	return nil, nil
 }
-

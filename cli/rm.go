@@ -1,8 +1,8 @@
 package cli
 
 import (
-	"fmt"
 	"flag"
+	"fmt"
 	"github.com/behance/go-logging/log"
 	"io"
 )
@@ -11,7 +11,7 @@ type ZkRm struct {
 	recursive bool //AclList
 }
 
-func ( zk *ZkRm) FlagSet(flags *flag.FlagSet) *flag.FlagSet {
+func (zk *ZkRm) FlagSet(flags *flag.FlagSet) *flag.FlagSet {
 	flags.BoolVar(&zk.recursive, "recursive", false, `convert the node value to a string`)
 	return flags
 }
@@ -41,25 +41,22 @@ func (zk *ZkRm) Parse(args []string) (exec CommandExec, err error) {
 
 func (zz *ZkRm) Execute(runtime *Runtime) (interface{}, error) {
 	log.Debugf("zkRm.Execute %+v", runtime)
-	children, err := func()  ([]string,error){
+	children, err := func() ([]string, error) {
 		if zz.recursive {
 			return GetChildren(runtime.ZkPath, runtime.Client)
 		}
-		return []string{runtime.ZkPath},nil
+		return []string{runtime.ZkPath}, nil
 	}()
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
-	for ii:=len(children)-1; ii >= 0 ; ii-- {
+	for ii := len(children) - 1; ii >= 0; ii-- {
 		leaf := children[ii]
 		children = children[:ii]
 		if err = Delete(leaf, runtime.Client); err != nil {
 			log.Errorf("Error deleting %s", leaf)
 		}
-		log.Debugf("deleted %s",leaf)
+		log.Debugf("deleted %s", leaf)
 	}
-	return GenericResult{Success:true, Message: fmt.Sprintf("%s deleted successfully", runtime.ZkPath)}, nil
+	return GenericResult{Success: true, Message: fmt.Sprintf("%s deleted successfully", runtime.ZkPath)}, nil
 }
-
-
-

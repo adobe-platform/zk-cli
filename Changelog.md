@@ -1,3 +1,7 @@
+## v0.2.1
+- Chop trailing / on node path.  They are illegal for most zk operations
+- gofmt code
+
 ## v0.2
 -- Add rm and ls subcommands
 

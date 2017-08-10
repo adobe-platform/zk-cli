@@ -18,9 +18,9 @@ var commands commandMap
 func init() {
 	commands = commandMap{
 		"create": cli.CommandParse(new(cli.CreateZkNode)),
-		"rm": cli.CommandParse(new(cli.ZkRm)),
-		"ls": cli.CommandParse(new(cli.ZkLs)),
-		"get": cli.CommandParse(new(cli.ZkGet)),
+		"rm":     cli.CommandParse(new(cli.ZkRm)),
+		"ls":     cli.CommandParse(new(cli.ZkLs)),
+		"get":    cli.CommandParse(new(cli.ZkGet)),
 		"getAcl": cli.CommandParse(new(cli.ZkGetAcl)),
 		"setAcl": cli.CommandParse(new(cli.ZkSetAcl)),
 	}
@@ -54,7 +54,7 @@ GLOBAL OPTIONS:
 
 	runtime := &cli.Runtime{}
 	runtime.Usage(os.Stderr)
-	fmt.Fprintln(os.Stderr	)
+	fmt.Fprintln(os.Stderr)
 	os.Exit(2)
 }
 func In(targ string, list []string) (retval bool) {
@@ -106,7 +106,7 @@ func main() {
 		log.Debugf("runtime: %#v", runtime)
 		var executorArgs []string
 		if len(os.Args) > (index + 1) {
-			executorArgs = os.Args[index + 1:]
+			executorArgs = os.Args[index+1:]
 		}
 		log.Debugf("executorArgs %+v", executorArgs)
 		if action == "help" {
@@ -119,7 +119,7 @@ func main() {
 			} else {
 				log.Debugf("Result type: %T", result)
 
-				switch result.(type){
+				switch result.(type) {
 				case json.RawMessage:
 					var f interface{}
 					by := result.(json.RawMessage)

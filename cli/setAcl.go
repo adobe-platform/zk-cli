@@ -1,9 +1,9 @@
 package cli
 
 import (
-	"github.com/behance/go-logging/log"
-	"fmt"
 	"flag"
+	"fmt"
+	"github.com/behance/go-logging/log"
 	"io"
 )
 
@@ -27,7 +27,7 @@ func (zk *ZkSetAcl) Usage(writer io.Writer) {
 	fmt.Fprintln(writer, "setAcl ")
 	flags.SetOutput(writer)
 	flags.PrintDefaults()
-	fmt.Fprintln(writer,`
+	fmt.Fprintln(writer, `
 	Example - add acls to wide open
 	./zk-cli-linux-amd64 --zk-hosts zk://digest:user:pw@172.20.0.2:2181/foo7 --debug setAcl -acl 'perms=all scheme=digest id=user:pw'
 	`)
@@ -39,12 +39,10 @@ func (zk *ZkSetAcl) Execute(runtime *Runtime) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	stat, err = runtime.Client.SetACL(runtime.ZkPath, zk.AclList,stat.Version)
+	stat, err = runtime.Client.SetACL(runtime.ZkPath, zk.AclList, stat.Version)
 	if err != nil {
 		return nil, err
 	}
-	log.Debugf("create %s -> %#v", runtime.ZkPath,stat)
+	log.Debugf("create %s -> %#v", runtime.ZkPath, stat)
 	return stat, nil
 }
-
-

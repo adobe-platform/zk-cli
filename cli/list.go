@@ -1,11 +1,11 @@
 package cli
 
 import (
-	"fmt"
 	"flag"
+	"fmt"
 	"github.com/behance/go-logging/log"
-	"io"
 	"github.com/samuel/go-zookeeper/zk"
+	"io"
 	"strings"
 )
 
@@ -14,7 +14,7 @@ type ZkLs struct {
 	acls      bool
 }
 
-func ( zk *ZkLs) FlagSet(flags *flag.FlagSet) *flag.FlagSet {
+func (zk *ZkLs) FlagSet(flags *flag.FlagSet) *flag.FlagSet {
 	flags.BoolVar(&zk.recursive, "recursive", false, `recursively retrieve children`)
 	flags.BoolVar(&zk.acls, "with-acls", false, `with acls`)
 	return flags
@@ -66,37 +66,37 @@ func (zz *ZkLs) Execute(runtime *Runtime) (interface{}, error) {
 				vchildren[ii] = fmt.Sprintf("%s -- unknown %s", child, err)
 				continue
 			}
-			aclSet := make([]string,len(acls))
+			aclSet := make([]string, len(acls))
 			perms := ""
 			for mm, acl := range acls {
-				log.Debugf("Considering %v",acls)
+				log.Debugf("Considering %v", acls)
 				for kk := 1; kk <= zk.PermAll; kk = kk << 1 {
-					switch val:=acl.Perms & int32(kk);val {
-					case zk.PermAdmin: perms += "a"
-					case zk.PermRead: perms += "r"
-					case zk.PermWrite: perms += "w"
-					case zk.PermDelete: perms += "d"
-					case zk.PermCreate: perms += "c"
-					default:
-						log.Debugf("%s perm %X - %d unknown",child,acl.Perms,val)
+					switch val := acl.Perms & int32(kk); val {
+					case zk.PermAdmin:
+						perms += "a"
+					case zk.PermRead:
+						perms += "r"
+					case zk.PermWrite:
+						perms += "w"
+					case zk.PermDelete:
+						perms += "d"
+					case zk.PermCreate:
+						perms += "c"
 					}
 				}
 
-				aclSet[mm] = fmt.Sprintf("%s:%s:%s:", acl.Scheme,acl.ID,perms)
+				aclSet[mm] = fmt.Sprintf("%s:%s:%s:", acl.Scheme, acl.ID, perms)
 			}
-			vchildren[ii] = fmt.Sprintf("%s -- %s", child, strings.Join(aclSet,","))
+			vchildren[ii] = fmt.Sprintf("%s -- %s", child, strings.Join(aclSet, ","))
 		}
-		return GenericResult{Success:true,
+		return GenericResult{Success: true,
 			Message: fmt.Sprintf("children of %s ", runtime.ZkPath),
-			Data: vchildren,
+			Data:    vchildren,
 		}, nil
 	}
 
-	return GenericResult{Success:true,
+	return GenericResult{Success: true,
 		Message: fmt.Sprintf("children of %s ", runtime.ZkPath),
-		Data: children,
+		Data:    children,
 	}, nil
 }
-
-
-
