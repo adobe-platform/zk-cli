@@ -33,7 +33,7 @@ func GetChildren(path string, client *zk.Conn) (tree []string, err error) {
 		}
 		for _, child := range children {
 			childPath := func() string {
-				if path != "/" {
+				if node != "/" {
 					return fmt.Sprintf("%s/%s", node, child)
 				}
 				return fmt.Sprintf("/%s", child)

@@ -72,7 +72,7 @@ func ParseZKURI(zkURI string) (servers []string, chroot string, acl []zk.ACL, er
 	log.Debugf("parts: %v", parts)
 	if len(parts) >= 2 {
 		chroot = "/" + strings.Join(parts[1:], "/")
-		if chroot[len(chroot)-1] == '/' {
+		if len(chroot) > 1 && chroot[len(chroot)-1] == '/' {
 			chroot = chroot[:len(chroot)-1]
 		}
 		servers, acl, err = auth(parts[0])
