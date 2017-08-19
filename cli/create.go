@@ -43,7 +43,7 @@ func (zk *CreateZkNode) FlagSet(flags *flag.FlagSet) *flag.FlagSet {
 // Parse - create flag parse
 func (zk *CreateZkNode) Parse(args []string) (exec CommandExec, err error) {
 	log.Debugf(" %+v", args)
-	flags := flag.NewFlagSet("zk acls", flag.ExitOnError)
+	flags := flag.NewFlagSet("zk create", flag.ExitOnError)
 	zk.FlagSet(flags)
 	if err = flags.Parse(args); err != nil {
 		return nil, err

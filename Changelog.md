@@ -1,3 +1,6 @@
+## v0.2.2
+- Add missing zk Set command
+
 ## v0.2.1
 - Chop trailing / on node path.  They are illegal for most zk operations
 - gofmt code

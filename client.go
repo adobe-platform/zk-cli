@@ -21,6 +21,7 @@ func init() {
 		"rm":     cli.CommandParse(new(cli.ZkRm)),
 		"ls":     cli.CommandParse(new(cli.ZkLs)),
 		"get":    cli.CommandParse(new(cli.ZkGet)),
+		"set":    cli.CommandParse(new(cli.ZkSet)),
 		"getAcl": cli.CommandParse(new(cli.ZkGetAcl)),
 		"setAcl": cli.CommandParse(new(cli.ZkSetAcl)),
 	}
